@@ -1,0 +1,37 @@
+search query in appstore
+"https://itunes.apple.com/search?term=\(searchWord)&country=\(userLocale)&entity=music"
+"https://itunes.apple.com/search?term=\(searchWord)&country=\(userLocale)"
+
+get Locale
+  https://zhiblog.tistory.com/17
+
+
+homePage(Required)
+  searchWord = 봄, 여름, 가을, 겨울
+  "https://itunes.apple.com/search?term=\(searchWord)&country=\(userLocale)&media=music"
+  봄에 어울리는 음악 Best 5
+    - trackName: 곡명
+    - artistName: 가수명
+    - artworkUrl100: 앨범재킷
+    
+  여름/가을/겨울에 어울리는 음악(9개)
+    - trackName: 곡명
+    - artistName: 가수명
+    - artworkUrl100: 앨범재킷
+
+searchResultPage
+    - trackName: 팟캐스트 이름
+    - artistName: 가수명
+    - artworkUrl100: 앨범재킷
+    
+    // MARK: ?? PODCAST OF THE DAY, News about Marvel은 하드코딩하라고? api에 없는데????
+    
+// appPage
+//   artistName: 아티스트 이름
+//   kind: 범주(노래/앨범)
+//   collectionName: 앨범 이름
+//   previewUrl: 미리듣기(30초)
+//   artworkUrl100: 앨범 재킷
+//   
+  
+  
