@@ -23,7 +23,10 @@ class MainViewModel {
   }
 
   func fetchMusic() {
-    guard let url = URL(string: "https://itunes.apple.com/search?term=\(searchWord)&country=\(userLocale ?? "noLocale")&media=music")
+    guard
+      let url = URL(
+        string: "https://itunes.apple.com/search?term=\(searchWord)&country=\(userLocale ?? "noLocale")&media=music"
+      )
     else {
       musicSubject.onError(NetworkError.invalidUrl)
       return
@@ -41,20 +44,28 @@ class MainViewModel {
   }
 
   func fetchPodcast() {
-    guard let url = URL(string: "https://itunes.apple.com/search?term=\(searchWord)&country=\(userLocale ?? "no Locale")&media=movie&media=podcast")
+    let base = "https://itunes.apple.com/search?term=\(searchWord)&country=\(userLocale ?? "no Locale")"
+    guard let movieUrl = URL(string: base + "&media=movie"),
+      let podcastUrl = URL(string: base + "&media=podcast")
     else {
       podcastSubject.onError(NetworkError.invalidUrl)
       return
     }
 
-    NetworkManager.shared.fetch(url: url)
+    let movieObservable: Single<[Podcast]> = NetworkManager.shared.fetch(url: movieUrl)
+      .map { (response: PodcastResponse) in response.results }
+    let podcastObservable: Single<[Podcast]> = NetworkManager.shared.fetch(url: podcastUrl)
+      .map { (response: PodcastResponse) in response.results }
+
+    Single.zip(podcastObservable, movieObservable)
+      .map { podcasts, movies in
+        return podcasts + movies
+      }
       .subscribe(
-        onSuccess: { [weak self] (podcastResponse: PodcastResponse) in
-          self?.podcastSubject.onNext(podcastResponse.results)
+        onSuccess: { [weak self] merged in
+          self?.podcastSubject.onNext(merged)
         },
-        onFailure: { [weak self] error in
-          self?.podcastSubject.onError(error)
-        }
+        onFailure: { [weak self] error in self?.podcastSubject.onError(error) }
       ).disposed(by: disposeBag)
   }
 }
