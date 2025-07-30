@@ -8,49 +8,64 @@
 import Then
 import UIKit
 
-class MusicCell: UICollectionViewCell {
-  static let id = "MusicCell"
+class SeasonsMusicCell: UICollectionViewCell {
+  static let id = "SeasonsMusicCell"
 
   private let imageView = UIImageView().then {
-    $0.contentMode = .scaleAspectFill
+    $0.contentMode = .scaleAspectFit
     $0.clipsToBounds = true
     $0.backgroundColor = .darkGray
     $0.layer.cornerRadius = 10
-    
+
   }
 
   private let titleLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 17, weight: .medium)
+    $0.font = .systemFont(ofSize: 17, weight: .bold)
   }
 
   private let artistLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 13, weight: .light)
+    $0.font = .systemFont(ofSize: 17, weight: .medium)
+  }
+
+  private let collectionLabel = UILabel().then {
+    $0.font = .systemFont(ofSize: 14, weight: .light)
     $0.textColor = .gray
   }
 
-  private let overlayStackView = UIStackView().then {
+  private let textStackView = UIStackView().then {
     $0.axis = .vertical
     $0.distribution = .fillEqually
-    $0.backgroundColor = .white
-    $0.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    $0.spacing = 4
+    // $0.backgroundColor = .white
+    // $0.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     $0.isLayoutMarginsRelativeArrangement = true
+  }
+
+  private let fullStackView = UIStackView().then {
+    $0.axis = .horizontal
   }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
-    contentView.addSubview(imageView)
-    imageView.addSubview(overlayStackView)
-    [titleLabel, artistLabel].forEach {
-      overlayStackView.addArrangedSubview($0)
+
+    contentView.addSubview(fullStackView)
+
+    [titleLabel, artistLabel, collectionLabel].forEach {
+      textStackView.addArrangedSubview($0)
     }
 
-    imageView.snp.makeConstraints {
+    [imageView, textStackView].forEach {
+      fullStackView.addArrangedSubview($0)
+    }
+
+    fullStackView.snp.makeConstraints {
       $0.edges.equalToSuperview()
     }
 
-    overlayStackView.snp.makeConstraints {
-      $0.leading.trailing.bottom.equalToSuperview()
-      // $0.height.equalTo(imageView.snp.height).dividedBy(3)
+    imageView.snp.makeConstraints {
+      $0.width.equalTo(imageView.snp.height)
+      // $0.height.lessThanOrEqualToSuperview().multipliedBy(0.7)
+      // $0.height.equalTo(80)
     }
   }
 
@@ -68,9 +83,11 @@ class MusicCell: UICollectionViewCell {
     guard let url = URL(string: imagePath) else { return }
     guard let trackName = music.trackName else { return }
     guard let artistName = music.artistName else { return }
-    
+    guard let collectionName = music.collectionName else { return }
+
     titleLabel.text = trackName
     artistLabel.text = artistName
+    collectionLabel.text = collectionName
 
     DispatchQueue.global(qos: .userInitiated).async {
       if let data = try? Data(contentsOf: url) {

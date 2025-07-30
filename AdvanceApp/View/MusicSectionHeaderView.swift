@@ -17,12 +17,13 @@ class MusicSectionHeaderView: UICollectionReusableView {
   }
 
   let subLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 15, weight: .regular)
+    $0.font = .systemFont(ofSize: 14, weight: .regular)
     $0.textColor = .gray
   }
 
   let labelStackView = UIStackView().then {
     $0.axis = .vertical
+    $0.spacing = 4
   }
   
   override init(frame: CGRect) {
@@ -41,7 +42,7 @@ class MusicSectionHeaderView: UICollectionReusableView {
     }
     labelStackView.snp.makeConstraints {
       $0.top.bottom.equalToSuperview()
-      $0.leading.equalToSuperview().inset(20)
+      $0.leading.equalToSuperview().inset(10)
       $0.trailing.equalToSuperview()
     }
   }

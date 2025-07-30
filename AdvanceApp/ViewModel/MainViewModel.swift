@@ -11,40 +11,57 @@ import UIKit
 
 class MainViewModel {
   let userLocale = Locale.current.region
-  let searchWord = "봄"
   private let disposeBag = DisposeBag()
 
-  let musicSubject: BehaviorSubject = BehaviorSubject(value: [Music]())
+  let springSubject: BehaviorSubject = BehaviorSubject(value: [Music]())
+  let summerSubject: BehaviorSubject = BehaviorSubject(value: [Music]())
+  let autumnSubject: BehaviorSubject = BehaviorSubject(value: [Music]())
+  let winterSubject: BehaviorSubject = BehaviorSubject(value: [Music]())
   let podcastSubject: BehaviorSubject = BehaviorSubject(value: [Podcast]())
 
   init() {
-    fetchMusic()
+    fetchMusic(for: .springMusic)
+    fetchMusic(for: .summerMusic)
+    fetchMusic(for: .autumnMusic)
+    fetchMusic(for: .winterMusic)
     fetchPodcast()
   }
 
-  func fetchMusic() {
+  func fetchMusic(for season: Section) {
+    let keyword = season.searchKeyword
+
     guard
       let url = URL(
-        string: "https://itunes.apple.com/search?term=\(searchWord)&country=\(userLocale ?? "noLocale")&media=music"
+        string: "https://itunes.apple.com/search?term=\(keyword)&country=\(userLocale ?? "kr")&media=music"
       )
     else {
-      musicSubject.onError(NetworkError.invalidUrl)
+      springSubject.onError(NetworkError.invalidUrl)
       return
     }
 
     NetworkManager.shared.fetch(url: url)
       .subscribe(
         onSuccess: { [weak self] (musicResponse: MusicResponse) in
-          self?.musicSubject.onNext(musicResponse.results)
+          // self?.musicSubject.onNext(musicResponse.results)
+          switch season {
+          case .springMusic:
+            self?.springSubject.onNext(musicResponse.results)
+          case .summerMusic:
+            self?.summerSubject.onNext(musicResponse.results)
+          case .autumnMusic:
+            self?.autumnSubject.onNext(musicResponse.results)
+          case .winterMusic:
+            self?.winterSubject.onNext(musicResponse.results)
+          }
         },
         onFailure: { [weak self] error in
-          self?.musicSubject.onError(error)
+          self?.springSubject.onError(error)
         }
       ).disposed(by: disposeBag)
   }
 
   func fetchPodcast() {
-    let base = "https://itunes.apple.com/search?term=\(searchWord)&country=\(userLocale ?? "no Locale")"
+    let base = "https://itunes.apple.com/search?term=봄&country=\(userLocale ?? "no Locale")"
     guard let movieUrl = URL(string: base + "&media=movie"),
       let podcastUrl = URL(string: base + "&media=podcast")
     else {
