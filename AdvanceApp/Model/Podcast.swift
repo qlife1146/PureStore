@@ -17,9 +17,11 @@ struct Podcast: Codable {
   let trackName: String?
   let artistName: String?
   let artworkUrl: String?
+  let kind: String?
+  let artworkUrl600: String?
   
   enum CodingKeys: String, CodingKey {
-    case trackName, artistName
+    case trackName, artistName, kind, artworkUrl600
     case artworkUrl = "artworkUrl100"
   }
 }

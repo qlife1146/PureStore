@@ -17,7 +17,6 @@ class MainViewController: UIViewController {
   private var summerMusicData: [Music] = []
   private var autumnMusicData: [Music] = []
   private var winterMusicData: [Music] = []
-  // private var podcastData: [Podcast] = []
 
   private let label = UILabel().then {
     $0.text = "Music"
@@ -52,6 +51,7 @@ class MainViewController: UIViewController {
     super.viewDidLoad()
     bind()
     configureUI()
+    searchBar.delegate = self
   }
 
   private func bind() {
@@ -264,7 +264,7 @@ extension MainViewController: UICollectionViewDataSource {
           withReuseIdentifier: SpringMusicCell.id,
           for: indexPath
         ) as! SpringMusicCell
-      cell.configure(with: springMusicData[indexPath.row])
+      cell.configure(with: springMusicData[indexPath.item])
       return cell
 
     case .summerMusic:
@@ -273,7 +273,7 @@ extension MainViewController: UICollectionViewDataSource {
           withReuseIdentifier: SeasonsMusicCell.id,
           for: indexPath
         ) as! SeasonsMusicCell
-      cell.configure(with: summerMusicData[indexPath.row])
+      cell.configure(with: summerMusicData[indexPath.item])
       return cell
 
     case .autumnMusic:
@@ -282,7 +282,7 @@ extension MainViewController: UICollectionViewDataSource {
           withReuseIdentifier: SeasonsMusicCell.id,
           for: indexPath
         ) as! SeasonsMusicCell
-      cell.configure(with: autumnMusicData[indexPath.row])
+      cell.configure(with: autumnMusicData[indexPath.item])
       return cell
 
     case .winterMusic:
@@ -291,7 +291,7 @@ extension MainViewController: UICollectionViewDataSource {
           withReuseIdentifier: SeasonsMusicCell.id,
           for: indexPath
         ) as! SeasonsMusicCell
-      cell.configure(with: winterMusicData[indexPath.row])
+      cell.configure(with: winterMusicData[indexPath.item])
       return cell
     }
   }
@@ -321,5 +321,14 @@ extension MainViewController: UICollectionViewDataSource {
 
   func numberOfSections(in collectionView: UICollectionView) -> Int {
     return Section.allCases.count
+  }
+}
+ 
+extension MainViewController: UISearchBarDelegate {
+  func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    guard let text = searchBar.text, !text.isEmpty else { return }
+    let searchVC = SearchViewController(searchText: text)
+    navigationController?.pushViewController(searchVC, animated: true)
+    // searchBar.resignFirstResponder()
   }
 }

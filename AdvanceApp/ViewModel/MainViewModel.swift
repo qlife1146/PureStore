@@ -10,21 +10,19 @@ import RxSwift
 import UIKit
 
 class MainViewModel {
-  let userLocale = Locale.current.region
   private let disposeBag = DisposeBag()
 
+  let userLocale = Locale.current.region
   let springSubject: BehaviorSubject = BehaviorSubject(value: [Music]())
   let summerSubject: BehaviorSubject = BehaviorSubject(value: [Music]())
   let autumnSubject: BehaviorSubject = BehaviorSubject(value: [Music]())
   let winterSubject: BehaviorSubject = BehaviorSubject(value: [Music]())
-  let podcastSubject: BehaviorSubject = BehaviorSubject(value: [Podcast]())
 
   init() {
     fetchMusic(for: .springMusic)
     fetchMusic(for: .summerMusic)
     fetchMusic(for: .autumnMusic)
     fetchMusic(for: .winterMusic)
-    fetchPodcast()
   }
 
   func fetchMusic(for season: Section) {
@@ -55,34 +53,17 @@ class MainViewModel {
           }
         },
         onFailure: { [weak self] error in
-          self?.springSubject.onError(error)
+          switch season {
+          case .springMusic:
+            self?.springSubject.onError(error)
+          case .summerMusic:
+            self?.summerSubject.onError(error)
+          case .autumnMusic:
+            self?.autumnSubject.onError(error)
+          case .winterMusic:
+            self?.winterSubject.onError(error)
+          }
         }
-      ).disposed(by: disposeBag)
-  }
-
-  func fetchPodcast() {
-    let base = "https://itunes.apple.com/search?term=봄&country=\(userLocale ?? "no Locale")"
-    guard let movieUrl = URL(string: base + "&media=movie"),
-      let podcastUrl = URL(string: base + "&media=podcast")
-    else {
-      podcastSubject.onError(NetworkError.invalidUrl)
-      return
-    }
-
-    let movieObservable: Single<[Podcast]> = NetworkManager.shared.fetch(url: movieUrl)
-      .map { (response: PodcastResponse) in response.results }
-    let podcastObservable: Single<[Podcast]> = NetworkManager.shared.fetch(url: podcastUrl)
-      .map { (response: PodcastResponse) in response.results }
-
-    Single.zip(podcastObservable, movieObservable)
-      .map { podcasts, movies in
-        return podcasts + movies
-      }
-      .subscribe(
-        onSuccess: { [weak self] merged in
-          self?.podcastSubject.onNext(merged)
-        },
-        onFailure: { [weak self] error in self?.podcastSubject.onError(error) }
       ).disposed(by: disposeBag)
   }
 }

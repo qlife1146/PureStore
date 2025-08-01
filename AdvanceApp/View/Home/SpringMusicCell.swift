@@ -16,7 +16,7 @@ class SpringMusicCell: UICollectionViewCell {
     $0.clipsToBounds = true
     $0.backgroundColor = .darkGray
     $0.layer.cornerRadius = 10
-    
+
   }
 
   private let titleLabel = UILabel().then {
@@ -68,7 +68,7 @@ class SpringMusicCell: UICollectionViewCell {
     guard let url = URL(string: imagePath) else { return }
     guard let trackName = music.trackName else { return }
     guard let artistName = music.artistName else { return }
-    
+
     titleLabel.text = trackName
     artistLabel.text = artistName
 
