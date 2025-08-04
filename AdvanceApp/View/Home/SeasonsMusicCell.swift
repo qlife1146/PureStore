@@ -24,11 +24,11 @@ class SeasonsMusicCell: UICollectionViewCell {
   }
 
   private let artistLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 17, weight: .medium)
+    $0.font = .systemFont(ofSize: 14, weight: .medium)
   }
 
   private let collectionLabel = UILabel().then {
-    $0.font = .systemFont(ofSize: 14, weight: .light)
+    $0.font = .systemFont(ofSize: 10, weight: .light)
     $0.textColor = .gray
   }
 
@@ -36,9 +36,8 @@ class SeasonsMusicCell: UICollectionViewCell {
     $0.axis = .vertical
     $0.distribution = .fillEqually
     $0.spacing = 4
-    // $0.backgroundColor = .white
-    // $0.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     $0.isLayoutMarginsRelativeArrangement = true
+    $0.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
   }
 
   private let fullStackView = UIStackView().then {
@@ -64,6 +63,7 @@ class SeasonsMusicCell: UICollectionViewCell {
 
     imageView.snp.makeConstraints {
       $0.width.equalTo(imageView.snp.height)
+      $0.trailing.equalTo(textStackView.snp.leading).offset(-10)
       // $0.height.lessThanOrEqualToSuperview().multipliedBy(0.7)
       // $0.height.equalTo(80)
     }

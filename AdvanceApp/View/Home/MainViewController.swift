@@ -29,6 +29,7 @@ class MainViewController: UIViewController {
     $0.searchTextField.layer.cornerRadius = 10
     $0.searchTextField.layer.masksToBounds = true
     $0.searchBarStyle = .minimal
+    // $0.showsCancelButton = true
     // $0.backgroundImage = UIImage()
   }
 
@@ -187,12 +188,14 @@ class MainViewController: UIViewController {
       heightDimension: .absolute(240)
     )
     let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 3)
+    group.contentInsets = .init(top: 10, leading: 0, bottom: 0, trailing: 0)
     group.interItemSpacing = .flexible(0)
-    
+
     let section = NSCollectionLayoutSection(group: group)
     section.orthogonalScrollingBehavior = .groupPagingCentered
-    section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+    section.contentInsets = .init(top: 0, leading: 0, bottom: 20, trailing: 0)
     section.boundarySupplementaryItems = [sectionHeader()]
+    section.interGroupSpacing = 20
 
     return section
   }
@@ -323,12 +326,25 @@ extension MainViewController: UICollectionViewDataSource {
     return Section.allCases.count
   }
 }
- 
+
 extension MainViewController: UISearchBarDelegate {
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
     guard let text = searchBar.text, !text.isEmpty else { return }
     let searchVC = SearchViewController(searchText: text)
     navigationController?.pushViewController(searchVC, animated: true)
-    // searchBar.resignFirstResponder()
+  }
+  
+  func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+    searchBar.showsCancelButton = true
+  }
+
+  func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+    searchBar.showsCancelButton = false
+  }
+
+  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    searchBar.resignFirstResponder()
+    searchBar.text = ""
+    searchBar.showsCancelButton = false
   }
 }

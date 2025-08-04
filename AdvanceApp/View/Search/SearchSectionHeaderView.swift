@@ -11,7 +11,7 @@ class SearchSectionHeaderView: UICollectionReusableView {
   static let id = "SearchSectionHeaderView"
 
   let label = UILabel().then {
-    $0.font = .systemFont(ofSize: 14, weight: .light)
+    $0.font = .systemFont(ofSize: 24, weight: .semibold)
     $0.textColor = .gray
   }
 
@@ -28,8 +28,7 @@ class SearchSectionHeaderView: UICollectionReusableView {
     addSubview(label)
 
     label.snp.makeConstraints {
-      $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
-      $0.verticalEdges.equalTo(safeAreaLayoutGuide)
+      $0.edges.equalToSuperview().inset(8)
     }
   }
 
