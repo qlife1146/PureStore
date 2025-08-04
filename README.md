@@ -22,3 +22,7 @@
 
 <img height="500" alt="Simulator Screenshot - iPhone 15 Pro - 2025-08-04 at 11 50 10" src="https://github.com/user-attachments/assets/7758a40c-03b3-4919-a633-a986c5a97939" />
 
+## 메모리 관리 분석
+- 앱 시작 > 검색 > 결과 화면에서 재검색 > 홈 화면 복귀 순으로 테스트
+
+<img width="1097" height="190" alt="image" src="https://github.com/user-attachments/assets/c576ba4d-b347-4d23-aad3-28c06b227403" />
